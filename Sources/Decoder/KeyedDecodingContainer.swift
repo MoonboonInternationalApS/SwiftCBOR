@@ -52,14 +52,13 @@ extension _CBORDecoder {
                         fatalError() // FIXME
                 }
 
-                let keyVal: AnyCodingKey
-                if self.options.useStringKeys {
-                    let stringKey = try! keyContainer.decode(String.self)
-                    keyVal = AnyCodingKey(stringValue: stringKey)
+                if self.options.useStringKeys, let stringKey = try? keyContainer.decode(String.self) {
+                    let keyVal = AnyCodingKey(stringValue: stringKey)
+                    nestedContainers[keyVal] = container
                 } else {
-                    keyVal = try! keyContainer.decode(AnyCodingKey.self)
+                    let keyVal = try keyContainer.decode(AnyCodingKey.self)
+                    nestedContainers[keyVal] = container
                 }
-                nestedContainers[keyVal] = container
             }
 
             self.index = unkeyedContainer.index

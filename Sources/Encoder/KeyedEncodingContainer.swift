@@ -83,9 +83,13 @@ extension _CBOREncoder.KeyedContainer: CBOREncodingContainer {
         data[0] = data[0] | 0b101_00000
         for (key, container) in self.storage {
             let keyContainer = _CBOREncoder.SingleValueContainer(codingPath: self.codingPath, userInfo: self.userInfo, options: self.options)
-            try! keyContainer.encode(key)
-            data.append(contentsOf: keyContainer.data)
-            data.append(contentsOf: container.data)
+            do {
+                try keyContainer.encode(key)
+                data.append(contentsOf: keyContainer.data)
+                data.append(contentsOf: container.data)
+            } catch let error {
+                print("Encoding error: \(error.localizedDescription)")
+            }
         }
 
         return Data(data)

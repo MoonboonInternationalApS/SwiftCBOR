@@ -61,7 +61,7 @@ extension AnyCodingKey: Decodable {
             self._stringValue = nil
             self.intValue = intValue
         } else {
-            self._stringValue = try! value.decode(String.self)
+            self._stringValue = try value.decode(String.self)
             self.intValue = nil
         }
     }

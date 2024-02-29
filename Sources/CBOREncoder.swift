@@ -130,8 +130,14 @@ extension CBOR {
 
     public static func encodeMap<A: CBOREncodable, B: CBOREncodable>(_ map: [A: B], options: CBOROptions = CBOROptions()) -> [UInt8] {
         if options.forbidNonStringMapKeys {
-            try! ensureStringKey(A.self)
+            do {
+                try ensureStringKey(A.self)
+            } catch let error {
+                print("Encoding error: \(error.localizedDescription)")
+                return []
+            }
         }
+        
         var res: [UInt8] = []
         res.reserveCapacity(1 + map.count * (MemoryLayout<A>.size + MemoryLayout<B>.size + 2))
         res = map.count.encode(options: options)
@@ -238,7 +244,12 @@ extension CBOR {
 
     public static func encodeMapChunk<A: CBOREncodable, B: CBOREncodable>(_ map: [A: B], options: CBOROptions = CBOROptions()) -> [UInt8] {
         if options.forbidNonStringMapKeys {
-            try! ensureStringKey(A.self)
+            do {
+                try ensureStringKey(A.self)
+            } catch let error {
+                print("Encoding error: \(error.localizedDescription)")
+                return []
+            }
         }
         var res: [UInt8] = []
         let count = map.count
@@ -275,7 +286,12 @@ extension CBOR {
                 AnnotatedMapDateStrategy.typeKey: AnnotatedMapDateStrategy.typeValue,
                 AnnotatedMapDateStrategy.valueKey: dateCBOR
             ]
-            return try! CBOR.encodeMap(map, options: options)
+            do {
+                return try CBOR.encodeMap(map, options: options)
+            } catch let error {
+                print("Encoding error: \(error.localizedDescription)")
+                return []
+            }
         case .taggedAsEpochTimestamp:
             var res: [UInt8] = [0b110_00001] // Epoch timestamp tag is 1
             if seconds < 0 && nanoseconds == 0 {
