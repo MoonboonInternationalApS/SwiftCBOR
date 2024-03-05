@@ -88,7 +88,7 @@ extension _CBOREncoder.KeyedContainer: CBOREncodingContainer {
                 data.append(contentsOf: keyContainer.data)
                 data.append(contentsOf: container.data)
             } catch let error {
-                print("Encoding error: \(error.localizedDescription)")
+                print("Encoding error: \(error)")
             }
         }
 

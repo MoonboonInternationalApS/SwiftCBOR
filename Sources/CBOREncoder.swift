@@ -133,7 +133,7 @@ extension CBOR {
             do {
                 try ensureStringKey(A.self)
             } catch let error {
-                print("Encoding error: \(error.localizedDescription)")
+                print("Encoding error: \(error)")
                 return []
             }
         }
@@ -247,7 +247,7 @@ extension CBOR {
             do {
                 try ensureStringKey(A.self)
             } catch let error {
-                print("Encoding error: \(error.localizedDescription)")
+                print("Encoding error: \(error)")
                 return []
             }
         }
@@ -289,7 +289,7 @@ extension CBOR {
             do {
                 return try CBOR.encodeMap(map, options: options)
             } catch let error {
-                print("Encoding error: \(error.localizedDescription)")
+                print("Encoding error: \(error)")
                 return []
             }
         case .taggedAsEpochTimestamp:
@@ -472,9 +472,18 @@ extension CBOR {
     }
 }
 
-public enum CBOREncoderError: Error {
+public enum CBOREncoderError: LocalizedError {
     case invalidType
     case nonStringKeyInMap
+    
+    public var errorDescription: String? {
+        switch self {
+        case .invalidType:
+            return "trying to encode invalid type"
+        case .nonStringKeyInMap:
+            return "non string key in map"
+        }
+    }
 }
 
 func ensureStringKey<T>(_ keyType: T.Type) throws where T: CBOREncodable {
